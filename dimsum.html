@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <title>Open PO Dimsum Kezia</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f1f0ff;
+      padding: 30px;
+      text-align: center;
+    }
+    .card {
+      background: #ffffff;
+      max-width: 420px;
+      margin: auto;
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+    }
+    .info {
+      background: #ffe9dc;
+      padding: 12px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      font-size: 14px;
+      text-align: left;
+    }
+    input {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+    .total {
+      font-weight: bold;
+      margin: 10px 0;
+      font-size: 18px;
+      color: #ff6b6b;
+    }
+    button {
+      background: #25d366;
+      color: white;
+      border: none;
+      padding: 10px;
+      width: 100%;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+    .qris-box {
+      margin-top: 15px;
+    }
+    .qris-box img {
+      width: 200px;
+      margin-top: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <h2>🥟 Open PO Dimsum Ayam ✨</h2>
+
+  <div class="info">
+    Isi 10 pcs – Rp 23.000<br>
+    Ready jam 19.00<br><br>
+    FOR SBH FREE ONGKIR<br>
+    NBH & Kost fee 4k<br>
+    Cowok Ketemuan depan I Love Dormitory
+  </div>
+
+  <input type="text" id="nama" placeholder="Nama pembeli">
+  <input type="number" id="jumlah" placeholder="Jumlah box" oninput="hitungTotal()">
+  <input type="text" id="alamat" placeholder="Area/Alamat kirim" oninput="hitungTotal()">
+  <input type="text" id="Payment" placeholder="Payment Method (e.g. Gopay, Ovo)">
+  
+  <div class="total" id="totalBayar">
+    Total: Rp 0
+  </div>
+
+  <div class="qris-box">
+    ✨<b>Scan QRIS untuk bayar 👇</b><br>
+    <img src="images/qris.jpeg" alt="QRIS Payment" width="250">
+  </div>
+
+  <button onclick="kirimWA()">Kirim Bukti Payment via WhatsApp</button>
+</div>
+
+<script>
+const harga = 23000;
+const feeKirim = 4000;
+
+function hitungTotal() {
+  let jumlah = parseInt(document.getElementById("jumlah").value) || 0;
+  let alamat = document.getElementById("alamat").value.toLowerCase();
+
+  let total = jumlah * harga;
+
+  if (alamat.includes("nbh") || alamat.includes("kost")) {
+    total += feeKirim; // NBH/Kost → tambah fee
+  } else if (alamat.includes("sbh")) {
+    total = jumlah * harga; // SBH → tanpa fee
+  } else if (alamat !== "") {
+    total += feeKirim; // area lain → tambah fee
+  }
+
+  document.getElementById("totalBayar").innerText =
+    `Total: Rp ${total.toLocaleString("id-ID")}`;
+}
+
+function kirimWA() {
+  let nama = document.getElementById("nama").value;
+  let jumlah = parseInt(document.getElementById("jumlah").value) || 0;
+  let alamat = document.getElementById("alamat").value;
+  let payment = document.getElementById("Payment").value;
+
+  let total = jumlah * harga;
+  let alamatLower = alamat.toLowerCase();
+
+  if (alamatLower.includes("nbh") || alamatLower.includes("kost")) {
+    total += feeKirim;
+  } else if (alamatLower.includes("sbh")) {
+    total = jumlah * harga;
+  } else if (alamatLower !== "") {
+    total += feeKirim;
+  }
+
+  let pesan =
+`Halo kak, saya sudah transfer ya 🥰
+
+=== ORDER DIMSUM AUOAUOAU ===
+Nama: ${nama}
+Jumlah: ${jumlah} box
+Total Bayar: Rp ${total.toLocaleString("id-ID")}
+Alamat: ${alamat}
+Payment Method: ${payment}
+
+Bukti pembayaran saya kirim setelah ini 🙏
+(Scan QRIS di web ini untuk bayar)`;
+
+  let nomor = "6282164386677"; // ganti dengan nomor WA kamu
+  let url = `https://wa.me/${nomor}?text=${encodeURIComponent(pesan)}`;
+  window.open(url, "_blank");
+}
+</script>
+
+</body>
+</html>
